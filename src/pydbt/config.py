@@ -2,9 +2,11 @@ from dataclasses import dataclass
 from typing import Literal, Optional, Dict, Any
 from pathlib import Path
 import os
-from dotenv import load_dotenv
+from dotenv import dotenv_values
 
 BackendType = Literal["duckdb", "postgres", "bigquery", "snowflake"]
+
+VALID_BACKENDS = {"duckdb", "postgres", "bigquery", "snowflake"}
 
 @dataclass
 class ConnectionConfig:
@@ -13,34 +15,38 @@ class ConnectionConfig:
 
     @classmethod
     def from_env(cls, env_path: Path) -> "ConnectionConfig":
-        load_dotenv(env_path)
+        config = dotenv_values(env_path)
         
-        backend = os.getenv("PYDBT_BACKEND")
-        if backend not in ("duckdb", "postgres", "bigquery", "snowflake"):
-            raise ValueError(f"Unsupported backend: {backend}")
+        backend = config.get("PYDBT_BACKEND")
+        if not backend:
+            raise ValueError("PYDBT_BACKEND must be set in .env file")
             
+        if backend not in VALID_BACKENDS:
+            raise ValueError(
+                f"Invalid backend: {backend}. Must be one of: {', '.join(VALID_BACKENDS)}"
+            )            
         if backend == "duckdb":
-            params = {"path": os.getenv("DUCKDB_PATH", ":memory:")}
+            params = {"path": config.get("DUCKDB_PATH", ":memory:")}
         elif backend == "postgres":
             params = {
-                "host": os.getenv("PG_HOST"),
-                "port": os.getenv("PG_PORT"),
-                "user": os.getenv("PG_USER"),
-                "password": os.getenv("PG_PASSWORD"),
-                "database": os.getenv("PG_DATABASE"),
+                "host": config.get("PG_HOST"),
+                "port": config.get("PG_PORT"),
+                "user": config.get("PG_USER"),
+                "password": config.get("PG_PASSWORD"),
+                "database": config.get("PG_DATABASE"),
             }
         elif backend == "bigquery":
             params = {
-                "project_id": os.getenv("BQ_PROJECT"),
-                "credentials_path": os.getenv("BQ_CREDENTIALS"),
+                "project_id": config.get("BQ_PROJECT"),
+                "credentials_path": config.get("BQ_CREDENTIALS"),
             }
         else:  # snowflake
             params = {
-                "account": os.getenv("SF_ACCOUNT"),
-                "user": os.getenv("SF_USER"),
-                "password": os.getenv("SF_PASSWORD"),
-                "database": os.getenv("SF_DATABASE"),
-                "warehouse": os.getenv("SF_WAREHOUSE"),
+                "account": config.get("SF_ACCOUNT"),
+                "user": config.get("SF_USER"),
+                "password": config.get("SF_PASSWORD"),
+                "database": config.get("SF_DATABASE"),
+                "warehouse": config.get("SF_WAREHOUSE"),
             }
             
         return cls(backend=backend, connection_params=params)

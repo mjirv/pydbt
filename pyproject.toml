@@ -5,14 +5,14 @@ description = "A Python-based DBT helper using Ibis"
 authors = ["Your Name <your.email@example.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = ">=3.10,<4.0"
 click = "^8.1.0"
-ibis = "^7.0.0"
+ibis-framework = { version = "^9.5.0", extras = [
+    "bigquery",
+    "duckdb",
+    "postgres",
+"snowflake"] }
 python-dotenv = "^1.0.0"
-duckdb = "^0.9.0"
-sqlalchemy = "^2.0.0"
-google-cloud-bigquery = "^3.0.0"
-snowflake-connector-python = "^3.0.0"
 typing-extensions = "^4.0.0"
 pytest = "^7.0.0"
 pytest-mock = "^3.10.0"

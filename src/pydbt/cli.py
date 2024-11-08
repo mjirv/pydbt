@@ -1,8 +1,11 @@
+# src/pydbt/cli.py
 import click
 from pathlib import Path
 import shutil
+from typing import Optional
 from .core import run_all_models
 from .config import ConnectionConfig
+from .testing import ModelTester
 
 @click.group()
 def cli():
@@ -90,7 +93,7 @@ def test(model: Optional[str]):
     def run_model_tests(model_path: Path) -> None:
         nonlocal failed_tests, total_tests
         
-        test_path = model_path.parent / f"test_{model_path.name}"
+        test_path = model_path.parent / f"{model_path.stem}_test.py" 
         if not test_path.exists():
             click.echo(f"No tests found for {model_path.name}")
             return
@@ -113,7 +116,7 @@ def test(model: Optional[str]):
         run_model_tests(model_path)
     else:
         for model_path in pydbt_dir.rglob("*.py"):
-            if model_path.name.startswith("test_") or model_path.name == "__init__.py":
+            if model_path.name.endswith("_test.py") or model_path.name == "__init__.py":
                 continue
             run_model_tests(model_path)
     

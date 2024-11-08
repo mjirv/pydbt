@@ -10,7 +10,7 @@ def test_load_python_model(sample_model_path):
 def test_get_ibis_connection():
     config = ConnectionConfig(
         backend="duckdb",
-        connection_params={"path": ":memory:"}
+        connection_params={"database": ":memory:"}
     )
     con = get_ibis_connection(config)
     assert con is not None
