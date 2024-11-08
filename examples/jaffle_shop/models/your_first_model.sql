@@ -1,0 +1,1 @@
+SELECT * FROM (SELECT "t0"."registration_date", COUNT("t0"."id") AS "daily_registrations" FROM "memory"."main"."users" AS "t0" GROUP BY 1) AS "t1" ORDER BY "t1"."registration_date" ASC

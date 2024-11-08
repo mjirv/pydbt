@@ -26,7 +26,7 @@ class ConnectionConfig:
                 f"Invalid backend: {backend}. Must be one of: {', '.join(VALID_BACKENDS)}"
             )            
         if backend == "duckdb":
-            params = {"path": config.get("DUCKDB_PATH", ":memory:")}
+            params = {"database": config.get("DUCKDB_DATABASE", ":memory:")}
         elif backend == "postgres":
             params = {
                 "host": config.get("PG_HOST"),

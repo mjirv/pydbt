@@ -21,6 +21,9 @@ def init():
     # Copy example model
     example_path = Path(__file__).parent / "templates" / "your_first_model.py"
     shutil.copy(example_path, pydbt_dir / "your_first_model.py")
+
+    test_path = Path(__file__).parent / "templates" / "your_first_model_test.py"
+    shutil.copy(test_path, pydbt_dir / "your_first_model_test.py")
     
     # Create .env.example
     env_example = """
@@ -28,7 +31,7 @@ def init():
 PYDBT_BACKEND=duckdb
 
 # DuckDB
-DUCKDB_PATH=:memory:
+DUCKDB_DATABASE=:memory:
 
 # PostgreSQL
 #PG_HOST=localhost

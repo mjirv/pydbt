@@ -20,3 +20,7 @@ pandas = "^2.0.0"
 
 [tool.poetry.scripts]
 pydbt = "pydbt.cli:cli"
+
+[build-system]
+requires = ["poetry"]
+build-backend = "poetry.masonry.api"

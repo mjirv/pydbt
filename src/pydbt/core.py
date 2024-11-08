@@ -35,8 +35,9 @@ def run_all_models(pydbt_dir: Path, models_dir: Path, config: ConnectionConfig) 
     """Runs all Python models and generates corresponding SQL files."""
     con = get_ibis_connection(config)
     
+    # Iterate over all Python files in the pydbt directory except tests
     for py_path in pydbt_dir.rglob("*.py"):
-        if py_path.name == "__init__.py":
+        if py_path.name == "__init__.py" or py_path.name.endswith("_test.py"):
             continue
             
         relative_path = py_path.relative_to(pydbt_dir)
